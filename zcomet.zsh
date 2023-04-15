@@ -475,7 +475,14 @@ _zcomet_snippet_command() {
   snippet_file=${snippet##*/}
   snippet_dir=${snippet%/*}
   snippet_dir="${ZCOMET[SNIPPETS_DIR]}/${snippet_dir/:\//}"
-  temp_dir="/tmp/zcomet/$$/${snippet_dir}"
+  # if /tmp isn't writable, make one
+  if [[ ! -w "/tmp" ]]; then
+	temp_root="${HOME}/.tmp"
+	mkdir "${temp_root}"
+  else
+	temp_root="/tmp"
+  fi
+  temp_dir="${temp_root}/zcomet/$$/${snippet_dir}"
 
   if [[ ! -f ${snippet_dir}/${snippet_file} ]] ||
      (( update )); then
@@ -501,7 +508,7 @@ _zcomet_snippet_command() {
       fi
       command mv "${temp_dir}/${snippet_file}" "${snippet_dir}" &&
           _zcomet_compile "${snippet_dir}/${snippet_file}"
-      command rm -rf "/tmp/zcomet/$$"
+      command rm -rf "${temp_root}/zcomet/$$"
     else
       >&2 print "Could not ${method} snippet ${snippet}."
     fi
