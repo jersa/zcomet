@@ -475,10 +475,10 @@ _zcomet_snippet_command() {
   snippet_file=${snippet##*/}
   snippet_dir=${snippet%/*}
   snippet_dir="${ZCOMET[SNIPPETS_DIR]}/${snippet_dir/:\//}"
-  # if /tmp isn't writable, make one
+  # if /tmp isn't writable, make one in the .zcomet base_dir 
   if [[ ! -w "/tmp" ]]; then
-	temp_root="${HOME}/.tmp"
-	mkdir "${temp_root}"
+	temp_root="$(dirname ${ZCOMET[SNIPPETS_DIR]})/.tmp"
+	command mkdir -p "${temp_root}"
   else
 	temp_root="/tmp"
   fi
